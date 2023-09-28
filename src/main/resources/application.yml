@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/qapl
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: rootroot
+  sql:
+    init:
+      schema-locations: classpath:db/qapl.sql
+      data-locations: classpath:db/qapl.sql
+

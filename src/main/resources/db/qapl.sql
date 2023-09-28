@@ -1,0 +1,32 @@
+CREATE DATABASE IF NOT EXISTS qapl;
+USE qapl;
+
+CREATE TABLE IF NOT EXISTS User
+(
+    UserID     INT AUTO_INCREMENT PRIMARY KEY,
+    Username   VARCHAR(255) NOT NULL,
+    Password   VARCHAR(255) NOT NULL,
+    Email      VARCHAR(255),
+    Phone      VARCHAR(20),
+    CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    IsDeleted  BOOLEAN   DEFAULT FALSE
+);
+
+CREATE TABLE IF NOT EXISTS QuestionType
+(
+    QuestionTypeID INT AUTO_INCREMENT PRIMARY KEY,
+    TypeName       VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Question
+(
+    QuestionID      INT AUTO_INCREMENT PRIMARY KEY,
+    QuestionName    VARCHAR(255) NOT NULL,
+    QuestionContent TEXT         NOT NULL,
+    QuestionType    INT          NOT NULL,
+    UserID INT NOT NULL,
+    CreateTime      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UpdateTime      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    IsDeleted       BOOLEAN   DEFAULT FALSE,
+    FOREIGN KEY (QuestionType) REFERENCES QuestionType (QuestionTypeID)
+);
