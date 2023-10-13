@@ -2,6 +2,7 @@ package com.lg.qapl.controller;
 
 import com.lg.qapl.request.AnswerRequest;
 import com.lg.qapl.request.LoginRequest;
+import com.lg.qapl.request.ViewQuestionRequest;
 import com.lg.qapl.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,11 @@ public class AdminController {
     }
 
     // 管理员查看问题列表
-    @GetMapping("/view-questions")
-    public ResponseEntity<?> viewQuestions() {
+    @PostMapping("/view-question")
+    public ResponseEntity<?> viewQuestion(@RequestBody ViewQuestionRequest request) {
         // 实现管理员查看问题列表逻辑
         // 返回问题列表
-        return adminService.viewQuestions();
+        return adminService.viewQuestions(request);
     }
 
     // 管理员删除问题
