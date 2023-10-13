@@ -1,28 +1,50 @@
 package com.lg.qapl.service.impl;
 
-import com.lg.qapl.Request.LoginRequest;
-import com.lg.qapl.Request.QuestionRequest;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.lg.qapl.entite.User;
+import com.lg.qapl.mapper.UserMapper;
+import com.lg.qapl.request.LoginRequest;
+import com.lg.qapl.request.QuestionRequest;
 import com.lg.qapl.service.UserService;
+import com.lg.qapl.utils.JwtUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     // 可以注入其他依赖
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public ResponseEntity<?> login(LoginRequest request) {
-        // 实现用户登录逻辑，验证用户名和密码
-        // 返回登录结果
-        // 这里可以调用DAO或者其他服务来处理登录逻辑
-        // 示例代码：
-        // if (userService.isValidUser(request.getUsername(), request.getPassword())) {
-        //     return ResponseEntity.ok("Login successful");
-        // } else {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        // }
-        return null; // 返回适当的响应
+        String username = request.getUsername();
+        String password = request.getPassword();
+
+        if (isValidUser(username, password)) {
+            // 如果用户名和密码有效，生成JWT令牌
+            String jwtToken = JwtUtils.getJwtToken(username, "user's nickname"); // 替换成实际的用户昵称
+
+            // 返回令牌给客户端
+            return ResponseEntity.ok(jwtToken);
+        } else {
+            // 如果验证失败，返回错误响应
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+    }
+
+    private boolean isValidUser(String username, String password) {
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+            return false;
+        }
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUsername, username)
+                .eq(User::getIsDeleted, false));
+        return null != user && user.getPassword().equals(password);
     }
 
     @Override

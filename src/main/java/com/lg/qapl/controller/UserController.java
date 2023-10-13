@@ -1,7 +1,7 @@
 package com.lg.qapl.controller;
 
-import com.lg.qapl.Request.LoginRequest;
-import com.lg.qapl.Request.QuestionRequest;
+import com.lg.qapl.request.LoginRequest;
+import com.lg.qapl.request.QuestionRequest;
 import com.lg.qapl.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

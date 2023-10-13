@@ -1,6 +1,7 @@
 package com.lg.qapl.controller;
 
-import com.lg.qapl.Request.AnswerRequest;
+import com.lg.qapl.request.AnswerRequest;
+import com.lg.qapl.request.LoginRequest;
 import com.lg.qapl.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,13 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     @Autowired
     private AdminService adminService;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        // 实现用户登录逻辑，验证用户名和密码
+        // 返回登录结果
+        return adminService.login(request);
+    }
 
     // 管理员查看问题列表
     @GetMapping("/view-questions")

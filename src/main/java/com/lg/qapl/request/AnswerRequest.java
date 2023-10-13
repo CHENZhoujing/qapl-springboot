@@ -1,4 +1,4 @@
-package com.lg.qapl.Request;
+package com.lg.qapl.request;
 
 public class AnswerRequest {
 }

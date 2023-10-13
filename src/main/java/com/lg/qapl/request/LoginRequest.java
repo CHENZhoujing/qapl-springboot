@@ -1,5 +1,8 @@
-package com.lg.qapl.Request;
+package com.lg.qapl.request;
 
+import lombok.Data;
+
+@Data
 public class LoginRequest {
     private String username;
     private String password;

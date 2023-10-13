@@ -1,7 +1,7 @@
 package com.lg.qapl.service;
 
-import com.lg.qapl.Request.LoginRequest;
-import com.lg.qapl.Request.QuestionRequest;
+import com.lg.qapl.request.LoginRequest;
+import com.lg.qapl.request.QuestionRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

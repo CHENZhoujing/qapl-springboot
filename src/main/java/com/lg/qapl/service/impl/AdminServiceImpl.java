@@ -1,6 +1,7 @@
 package com.lg.qapl.service.impl;
 
-import com.lg.qapl.Request.AnswerRequest;
+import com.lg.qapl.request.AnswerRequest;
+import com.lg.qapl.request.LoginRequest;
 import com.lg.qapl.service.AdminService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,5 +33,10 @@ public class AdminServiceImpl implements AdminService {
         // 返回回答结果
         // 这里可以调用DAO或者其他服务来处理回答逻辑
         return null; // 返回适当的响应
+    }
+
+    @Override
+    public ResponseEntity<?> login(LoginRequest request) {
+        return null;
     }
 }
