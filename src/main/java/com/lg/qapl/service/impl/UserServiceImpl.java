@@ -1,6 +1,7 @@
 package com.lg.qapl.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lg.qapl.entite.Question;
 import com.lg.qapl.entite.QuestionType;
 import com.lg.qapl.entite.User;
@@ -8,16 +9,15 @@ import com.lg.qapl.mapper.QuestionMapper;
 import com.lg.qapl.mapper.QuestionTypeMapper;
 import com.lg.qapl.mapper.UserMapper;
 import com.lg.qapl.request.LoginRequest;
-import com.lg.qapl.request.QuestionRequest;
+import com.lg.qapl.request.CreateQuestionRequest;
+import com.lg.qapl.request.ViewQuestionRequest;
 import com.lg.qapl.service.UserService;
-import com.lg.qapl.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalTime;
 import java.util.Date;
 
 @Service
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> askQuestion(QuestionRequest request) {
+    public ResponseEntity<?> askQuestion(CreateQuestionRequest request) {
         // check user
         User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
                 .eq(User::getUserId, request.getUserId())
@@ -91,10 +91,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> viewQuestion(Long questionId) {
+    public ResponseEntity<?> viewQuestion(ViewQuestionRequest request) {
         // 实现用户查看问题逻辑
         // 返回问题详情
         // 这里可以调用DAO或者其他服务来获取问题详情
-        return null; // 返回适当的响应
+        Page<Question> rowPage = new Page<>(request.getCurrent(), request.getSize());
+        LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<Question>()
+                .eq(Question::getUserId, request.getUserId())
+                .eq(Question::getIsDeleted, false);
+        rowPage = questionMapper.selectPage(rowPage, queryWrapper);
+        return ResponseEntity.ok(rowPage); // 返回适当的响应
     }
 }

@@ -3,7 +3,7 @@ package com.lg.qapl.request;
 import lombok.Data;
 
 @Data
-public class QuestionRequest {
+public class CreateQuestionRequest {
 
     private String questionName;
     private String questionContent;
