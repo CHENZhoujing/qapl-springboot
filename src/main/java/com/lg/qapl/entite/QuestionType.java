@@ -12,4 +12,6 @@ public class QuestionType {
     private Integer questionTypeId;
     @TableField(value = "type_name")
     private String typeName;
+    @TableField(value = "is_deleted")
+    private Boolean isDeleted;
 }

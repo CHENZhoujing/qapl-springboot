@@ -15,10 +15,10 @@ public class Question {
     private String questionName;
     @TableField(value = "question_content")
     private String questionContent;
-    @TableField(value = "question_type")
-    private Integer questionType;
+    @TableField(value = "question_type_id")
+    private Integer questionTypeId;
     @TableField(value = "user_id")
-    private Integer userID;
+    private Integer userId;
     @TableField(fill = FieldFill.INSERT, value = "create_time")
     private Date createTime;
     @TableField(fill = FieldFill.INSERT_UPDATE, value = "update_time")

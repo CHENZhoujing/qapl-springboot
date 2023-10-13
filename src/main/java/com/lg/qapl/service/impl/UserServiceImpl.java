@@ -1,7 +1,11 @@
 package com.lg.qapl.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.lg.qapl.entite.Question;
+import com.lg.qapl.entite.QuestionType;
 import com.lg.qapl.entite.User;
+import com.lg.qapl.mapper.QuestionMapper;
+import com.lg.qapl.mapper.QuestionTypeMapper;
 import com.lg.qapl.mapper.UserMapper;
 import com.lg.qapl.request.LoginRequest;
 import com.lg.qapl.request.QuestionRequest;
@@ -13,12 +17,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalTime;
+import java.util.Date;
+
 @Service
 public class UserServiceImpl implements UserService {
 
-    // 可以注入其他依赖
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionTypeMapper questionTypeMapper;
 
     @Override
     public ResponseEntity<?> login(LoginRequest request) {
@@ -27,10 +39,10 @@ public class UserServiceImpl implements UserService {
 
         if (isValidUser(username, password)) {
             // 如果用户名和密码有效，生成JWT令牌
-            String jwtToken = JwtUtils.getJwtToken(username, "user's nickname"); // 替换成实际的用户昵称
-
+            // String jwtToken = JwtUtils.getJwtToken(username, "user's nickname"); // 替换成实际的用户昵称
             // 返回令牌给客户端
-            return ResponseEntity.ok(jwtToken);
+            // return ResponseEntity.ok(jwtToken);
+            return ResponseEntity.ok("Login successfully");
         } else {
             // 如果验证失败，返回错误响应
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
@@ -43,16 +55,39 @@ public class UserServiceImpl implements UserService {
         }
         User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
                 .eq(User::getUsername, username)
+                .eq(User::getIsAdmin, false)
                 .eq(User::getIsDeleted, false));
         return null != user && user.getPassword().equals(password);
     }
 
     @Override
     public ResponseEntity<?> askQuestion(QuestionRequest request) {
-        // 实现用户提问逻辑
-        // 返回提问结果
-        // 这里可以调用DAO或者其他服务来处理提问逻辑
-        return null; // 返回适当的响应
+        // check user
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUserId, request.getUserId())
+                .eq(User::getIsAdmin, false)
+                .eq(User::getIsDeleted, false));
+        if (null == user) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user");
+        }
+        // check question type
+        QuestionType questionType = questionTypeMapper.selectOne(new LambdaQueryWrapper<QuestionType>()
+                .eq(QuestionType::getQuestionTypeId, request.getQuestionTypeId())
+                .eq(QuestionType::getIsDeleted, false));
+        if (null == questionType) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid question type");
+        }
+        // create question
+        Date now = new Date();
+        Question question = new Question();
+        question.setQuestionName(request.getQuestionName());
+        question.setQuestionContent(request.getQuestionContent());
+        question.setQuestionTypeId(request.getQuestionTypeId());
+        question.setUserId(request.getUserId());
+        question.setCreateTime(now);
+        question.setUpdateTime(now);
+        questionMapper.insert(question);
+        return ResponseEntity.ok("Create question success");
     }
 
     @Override
