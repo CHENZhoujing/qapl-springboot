@@ -1,6 +1,6 @@
 package com.lg.qapl.controller;
 
-import com.lg.qapl.request.AnswerRequest;
+import com.lg.qapl.request.AnswerQuestionRequest;
 import com.lg.qapl.request.LoginRequest;
 import com.lg.qapl.request.ViewQuestionRequest;
 import com.lg.qapl.service.AdminService;
@@ -39,7 +39,7 @@ public class AdminController {
 
     // 管理员回答问题
     @PostMapping("/answer-question")
-    public ResponseEntity<?> answerQuestion(@RequestBody AnswerRequest request) {
+    public ResponseEntity<?> answerQuestion(@RequestBody AnswerQuestionRequest request) {
         // 实现管理员回答问题逻辑
         // 返回回答结果
         return adminService.answerQuestion(request);

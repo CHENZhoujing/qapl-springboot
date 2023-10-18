@@ -7,7 +7,7 @@ import com.lg.qapl.entite.Question;
 import com.lg.qapl.mapper.QuestionMapper;
 import com.lg.qapl.mapper.QuestionTypeMapper;
 import com.lg.qapl.mapper.UserMapper;
-import com.lg.qapl.request.AnswerRequest;
+import com.lg.qapl.request.AnswerQuestionRequest;
 import com.lg.qapl.request.LoginRequest;
 import com.lg.qapl.request.ViewQuestionRequest;
 import com.lg.qapl.service.AdminService;
@@ -60,11 +60,29 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ResponseEntity<?> answerQuestion(AnswerRequest request) {
+    public ResponseEntity<?> answerQuestion(AnswerQuestionRequest request) {
         // 实现管理员回答问题逻辑
         // 返回回答结果
         // 这里可以调用DAO或者其他服务来处理回答逻辑
-        return null; // 返回适当的响应
+        // check user
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUserId, request.getUserId())
+                .eq(User::getIsAdmin, false)
+                .eq(User::getIsDeleted, false));
+        if (null == user) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user");
+        }
+        // check question
+        Question question = questionMapper.selectOne(new LambdaQueryWrapper<Question>()
+                .eq(Question::getQuestionId, request.getQuestionId())
+                .eq(Question::getIsDeleted, false));
+        if (null == question) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid question");
+        }
+        question.setAnswer(request.getAnswerContent());
+        question.setAnswerTime(new Date());
+        questionMapper.updateById(question);
+        return ResponseEntity.ok("Answer question success"); // 返回适当的响应
     }
 
     @Override

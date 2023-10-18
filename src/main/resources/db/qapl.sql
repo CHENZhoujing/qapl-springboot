@@ -27,12 +27,13 @@ CREATE TABLE IF NOT EXISTS question_type
 CREATE TABLE IF NOT EXISTS question
 (
     question_id      INT AUTO_INCREMENT PRIMARY KEY,
-    question_name    VARCHAR(255) NOT NULL,
     question_content TEXT         NOT NULL,
     question_type_id INT          NOT NULL,
     user_id          INT          NOT NULL,
     create_time      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_time      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    answer           TEXT,
+    answer_time      TIMESTAMP,
     is_deleted       BOOLEAN   DEFAULT FALSE,
     FOREIGN KEY (question_type_id) REFERENCES question_type (question_type_id)
 );
@@ -47,7 +48,7 @@ VALUES ('Multiple Choice'),
        ('True/False'),
        ('Short Answer');
 
-INSERT INTO question (question_name, question_content, question_type_id, user_id)
-VALUES ('Question 1', 'What is the capital of France?', 1, 1),
-       ('Question 2', 'Is the Earth round?', 2, 1),
-       ('Question 3', 'Solve for x: 2x + 3 = 7', 3, 2);
+INSERT INTO question (question_content, question_type_id, user_id)
+VALUES ('Question 1?', 1, 1),
+       ('Question 2?', 2, 1),
+       ('Question 3?', 3, 2);

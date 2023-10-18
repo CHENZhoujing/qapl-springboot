@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class CreateQuestionRequest {
 
-    private String questionName;
     private String questionContent;
+    private String answer;
     private Integer questionTypeId;
     private Integer userId;
 }

@@ -34,30 +34,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> login(LoginRequest request) {
-        String username = request.getUsername();
-        String password = request.getPassword();
 
-        if (isValidUser(username, password)) {
-            // 如果用户名和密码有效，生成JWT令牌
-            // String jwtToken = JwtUtils.getJwtToken(username, "user's nickname"); // 替换成实际的用户昵称
-            // 返回令牌给客户端
-            // return ResponseEntity.ok(jwtToken);
-            return ResponseEntity.ok("Login successfully");
-        } else {
-            // 如果验证失败，返回错误响应
+        if (null == request.getUsername() || null == request.getPassword()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
-    }
-
-    private boolean isValidUser(String username, String password) {
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            return false;
-        }
         User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
-                .eq(User::getUsername, username)
+                .eq(User::getUsername, request.getUsername())
                 .eq(User::getIsAdmin, false)
                 .eq(User::getIsDeleted, false));
-        return null != user && user.getPassword().equals(password);
+        if (null != user && user.getPassword().equals(request.getPassword())) {
+            return ResponseEntity.ok("Login successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
     }
 
     @Override
@@ -80,7 +69,7 @@ public class UserServiceImpl implements UserService {
         // create question
         Date now = new Date();
         Question question = new Question();
-        question.setQuestionName(request.getQuestionName());
+        question.setAnswer(question.getAnswer());
         question.setQuestionContent(request.getQuestionContent());
         question.setQuestionTypeId(request.getQuestionTypeId());
         question.setUserId(request.getUserId());

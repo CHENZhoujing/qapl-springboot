@@ -11,10 +11,12 @@ public class Question {
     @TableId(type = IdType.AUTO)
     @TableField(value = "question_id")
     private Integer questionId;
-    @TableField(value = "question_name")
-    private String questionName;
     @TableField(value = "question_content")
     private String questionContent;
+    @TableField(value = "answer")
+    private String answer;
+    @TableField(value = "answer_time")
+    private Date answerTime;
     @TableField(value = "question_type_id")
     private Integer questionTypeId;
     @TableField(value = "user_id")
