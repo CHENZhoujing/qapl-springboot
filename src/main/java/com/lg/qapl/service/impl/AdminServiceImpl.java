@@ -11,6 +11,7 @@ import com.lg.qapl.request.AnswerQuestionRequest;
 import com.lg.qapl.request.LoginRequest;
 import com.lg.qapl.request.ViewQuestionRequest;
 import com.lg.qapl.service.AdminService;
+import com.lg.qapl.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -96,7 +97,8 @@ public class AdminServiceImpl implements AdminService {
                 .eq(User::getIsAdmin, true)
                 .eq(User::getIsDeleted, false));
         if (null != user && user.getPassword().equals(request.getPassword())) {
-            return ResponseEntity.ok("Login successfully");
+            String token = JwtUtil.generateToken(user.getUsername());
+            return ResponseEntity.ok(token); // 返回生成的令牌
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }

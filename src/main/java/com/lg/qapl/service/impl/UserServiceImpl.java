@@ -10,13 +10,14 @@ import com.lg.qapl.mapper.QuestionTypeMapper;
 import com.lg.qapl.mapper.UserMapper;
 import com.lg.qapl.request.LoginRequest;
 import com.lg.qapl.request.CreateQuestionRequest;
+import com.lg.qapl.request.UpdateQuestionRequest;
 import com.lg.qapl.request.ViewQuestionRequest;
 import com.lg.qapl.service.UserService;
+import com.lg.qapl.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
 
@@ -43,7 +44,8 @@ public class UserServiceImpl implements UserService {
                 .eq(User::getIsAdmin, false)
                 .eq(User::getIsDeleted, false));
         if (null != user && user.getPassword().equals(request.getPassword())) {
-            return ResponseEntity.ok("Login successfully");
+            String token = JwtUtil.generateToken(user.getUsername());
+            return ResponseEntity.ok(token); // 返回生成的令牌
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
@@ -80,6 +82,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseEntity<?> updateQuestion(UpdateQuestionRequest request) {
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUserId, request.getUserId())
+                .eq(User::getIsAdmin, false)
+                .eq(User::getIsDeleted, false));
+        if (null == user) {
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user");
+        }
+        Question question = questionMapper.selectOne(new LambdaQueryWrapper<Question>()
+                .eq(Question::getQuestionId, request.getQuestionId())
+                .eq(Question::getIsDeleted, false));
+        Date now = new Date();
+        question.setAnswerTime(now);
+        question.setQuestionContent(request.getQuestionContent());
+        questionMapper.updateById(question);
+        return null;
+    }
+
+    @Override
     public ResponseEntity<?> viewQuestion(ViewQuestionRequest request) {
         // 实现用户查看问题逻辑
         // 返回问题详情
@@ -89,6 +110,6 @@ public class UserServiceImpl implements UserService {
                 .eq(Question::getUserId, request.getUserId())
                 .eq(Question::getIsDeleted, false);
         rowPage = questionMapper.selectPage(rowPage, queryWrapper);
-        return ResponseEntity.ok(rowPage); // 返回适当的响应
+        return ResponseEntity.status(HttpStatus.OK).body(rowPage); // 返回适当的响应
     }
 }
