@@ -1,12 +1,15 @@
 package com.lg.qapl.utils;
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import javax.crypto.SecretKey;
 import io.jsonwebtoken.SignatureAlgorithm;
+
 import java.util.Date;
 
 public class JwtUtil {
 
-    private static final String SECRET_KEY = "ukc8BDbRigUDaY6pZFfWus2jZWLPHSxddfds"; // 使用一个强密钥
+    private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
     public static String generateToken(String username) {
         long expirationTime = 1000 * 60 * 60; // 令牌有效期，例如1小时
