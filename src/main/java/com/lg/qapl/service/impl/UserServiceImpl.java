@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -44,18 +45,26 @@ public class UserServiceImpl implements UserService {
                 .eq(User::getIsAdmin, false)
                 .eq(User::getIsDeleted, false));
         if (null != user && user.getPassword().equals(request.getPassword())) {
-            String token = JwtUtil.generateToken(user.getUsername());
-            return ResponseEntity.ok(token); // 返回生成的令牌
+            String token = JwtUtil.generateToken(user.getUserId());
+            return ResponseEntity.status(HttpStatus.OK).body(token); // 返回生成的令牌
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
 
     @Override
-    public ResponseEntity<?> askQuestion(CreateQuestionRequest request) {
+    public ResponseEntity<?> getQuestionType() {
+        List<QuestionType> questionTypes = questionTypeMapper.selectList(new LambdaQueryWrapper<QuestionType>()
+                .eq(QuestionType::getIsDeleted, false));
+        return ResponseEntity.status(HttpStatus.OK).body(questionTypes);
+    }
+
+    @Override
+    public ResponseEntity<?> askQuestion(String token, CreateQuestionRequest request) {
         // check user
+        Integer userId = JwtUtil.getUserIdFromToken(token);
         User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
-                .eq(User::getUserId, request.getUserId())
+                .eq(User::getUserId, userId)
                 .eq(User::getIsAdmin, false)
                 .eq(User::getIsDeleted, false));
         if (null == user) {
@@ -74,7 +83,7 @@ public class UserServiceImpl implements UserService {
         question.setAnswer(question.getAnswer());
         question.setQuestionContent(request.getQuestionContent());
         question.setQuestionTypeId(request.getQuestionTypeId());
-        question.setUserId(request.getUserId());
+        question.setUserId(userId);
         question.setCreateTime(now);
         question.setUpdateTime(now);
         questionMapper.insert(question);
@@ -88,7 +97,7 @@ public class UserServiceImpl implements UserService {
                 .eq(User::getIsAdmin, false)
                 .eq(User::getIsDeleted, false));
         if (null == user) {
-            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user");
         }
         Question question = questionMapper.selectOne(new LambdaQueryWrapper<Question>()
                 .eq(Question::getQuestionId, request.getQuestionId())
@@ -101,13 +110,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> viewQuestion(ViewQuestionRequest request) {
+    public ResponseEntity<?> viewQuestion(String token, ViewQuestionRequest request) {
         // 实现用户查看问题逻辑
         // 返回问题详情
         // 这里可以调用DAO或者其他服务来获取问题详情
+        Integer userId = JwtUtil.getUserIdFromToken(token);
+
         Page<Question> rowPage = new Page<>(request.getCurrent(), request.getSize());
         LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<Question>()
-                .eq(Question::getUserId, request.getUserId())
+                .eq(Question::getUserId, userId)
                 .eq(Question::getIsDeleted, false);
         rowPage = questionMapper.selectPage(rowPage, queryWrapper);
         return ResponseEntity.status(HttpStatus.OK).body(rowPage); // 返回适当的响应

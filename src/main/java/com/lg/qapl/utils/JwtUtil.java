@@ -1,5 +1,6 @@
 package com.lg.qapl.utils;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
@@ -11,10 +12,10 @@ public class JwtUtil {
 
     private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
-    public static String generateToken(String username) {
-        long expirationTime = 1000 * 60 * 60; // 令牌有效期，例如1小时
+    public static String generateToken(Integer userId) {
+        long expirationTime = 1000 * 60 * 60 * 24; // 令牌有效期，例如1小时
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(userId.toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
@@ -27,5 +28,13 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public static Integer getUserIdFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody();
+        return Integer.parseInt(claims.getSubject()); // 假设 subject 存的是用户的 ID
     }
 }

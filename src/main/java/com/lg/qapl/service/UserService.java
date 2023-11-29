@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService {
     ResponseEntity<?> login(LoginRequest request);
-    ResponseEntity<?> askQuestion(CreateQuestionRequest request);
+    ResponseEntity<?> getQuestionType();
+    ResponseEntity<?> askQuestion(String token, CreateQuestionRequest request);
     ResponseEntity<?> updateQuestion(UpdateQuestionRequest request);
-    ResponseEntity<?> viewQuestion(ViewQuestionRequest request);
+    ResponseEntity<?> viewQuestion(String token, ViewQuestionRequest request);
 }

@@ -8,5 +8,4 @@ public class CreateQuestionRequest {
     private String questionContent;
     private String answer;
     private Integer questionTypeId;
-    private Integer userId;
 }

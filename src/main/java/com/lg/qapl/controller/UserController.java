@@ -24,17 +24,26 @@ public class UserController {
 
     // 用户提问
     @PostMapping("/ask")
-    public ResponseEntity<?> askQuestion(@RequestBody CreateQuestionRequest request) {
+    public ResponseEntity<?> askQuestion(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody CreateQuestionRequest request) {
         // 实现用户提问逻辑
         // 返回提问结果
-        return userService.askQuestion(request);
+        String token = authorizationHeader.substring("Bearer ".length());
+        return userService.askQuestion(token, request);
     }
 
     // 用户查看问题
     @PostMapping("/view-question")
-    public ResponseEntity<?> viewQuestion(@RequestBody ViewQuestionRequest request) {
+    public ResponseEntity<?> viewQuestion(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody ViewQuestionRequest request) {
         // 实现用户查看问题逻辑
         // 返回问题详情
-        return userService.viewQuestion(request);
+        String token = authorizationHeader.substring("Bearer ".length());
+        return userService.viewQuestion(token, request);
+    }
+
+    @GetMapping("/get-question-type")
+    public ResponseEntity<?> getQuestionType() {
+        // 实现获取问题类型逻辑
+        // 返回问题类型
+        return userService.getQuestionType();
     }
 }

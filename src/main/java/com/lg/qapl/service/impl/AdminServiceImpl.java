@@ -97,7 +97,7 @@ public class AdminServiceImpl implements AdminService {
                 .eq(User::getIsAdmin, true)
                 .eq(User::getIsDeleted, false));
         if (null != user && user.getPassword().equals(request.getPassword())) {
-            String token = JwtUtil.generateToken(user.getUsername());
+            String token = JwtUtil.generateToken(user.getUserId());
             return ResponseEntity.ok(token); // 返回生成的令牌
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
