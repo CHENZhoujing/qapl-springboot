@@ -2,16 +2,15 @@ package com.lg.qapl.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lg.qapl.entite.QaplCombined;
 import com.lg.qapl.entite.Question;
 import com.lg.qapl.entite.QuestionType;
 import com.lg.qapl.entite.User;
+import com.lg.qapl.mapper.QaplCombinedMapper;
 import com.lg.qapl.mapper.QuestionMapper;
 import com.lg.qapl.mapper.QuestionTypeMapper;
 import com.lg.qapl.mapper.UserMapper;
-import com.lg.qapl.request.LoginRequest;
-import com.lg.qapl.request.CreateQuestionRequest;
-import com.lg.qapl.request.UpdateQuestionRequest;
-import com.lg.qapl.request.ViewQuestionRequest;
+import com.lg.qapl.request.*;
 import com.lg.qapl.service.UserService;
 import com.lg.qapl.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private QuestionTypeMapper questionTypeMapper;
+    @Autowired
+    private QaplCombinedMapper qaplCombinedMapper;
 
     @Override
     public ResponseEntity<?> login(LoginRequest request) {
@@ -80,7 +81,7 @@ public class UserServiceImpl implements UserService {
         // create question
         Date now = new Date();
         Question question = new Question();
-        question.setAnswer(question.getAnswer());
+        question.setQuestionTitle(request.getQuestionTitle());
         question.setQuestionContent(request.getQuestionContent());
         question.setQuestionTypeId(request.getQuestionTypeId());
         question.setUserId(userId);
@@ -116,11 +117,16 @@ public class UserServiceImpl implements UserService {
         // 这里可以调用DAO或者其他服务来获取问题详情
         Integer userId = JwtUtil.getUserIdFromToken(token);
 
-        Page<Question> rowPage = new Page<>(request.getCurrent(), request.getSize());
-        LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<Question>()
-                .eq(Question::getUserId, userId)
-                .eq(Question::getIsDeleted, false);
-        rowPage = questionMapper.selectPage(rowPage, queryWrapper);
+        Page<QaplCombined> rowPage = new Page<>(request.getCurrent(), request.getSize());
+        LambdaQueryWrapper<QaplCombined> queryWrapper = new LambdaQueryWrapper<QaplCombined>()
+                .eq(QaplCombined::getUserId, userId)
+                .eq(QaplCombined::getUserIsDeleted, false)
+                .eq(QaplCombined::getQuestionIsDeleted, false)
+                .orderByDesc(QaplCombined::getQuestionCreateTime);
+        rowPage = qaplCombinedMapper.selectPage(rowPage, queryWrapper);
+
         return ResponseEntity.status(HttpStatus.OK).body(rowPage); // 返回适当的响应
     }
+
+
 }

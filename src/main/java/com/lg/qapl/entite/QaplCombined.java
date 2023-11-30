@@ -10,11 +10,11 @@ import java.util.Date;
 @Data
 @TableName("qapl_combined")
 public class QaplCombined {
-    @TableId("qapl_combined")
+    @TableId("user_id")
     @TableField(value = "user_id")
     private Integer userId;
 
-    @TableField(value = "user_name")
+    @TableField(value = "username")
     private String username;
 
     @TableField(value = "user_email")
@@ -29,14 +29,20 @@ public class QaplCombined {
     @TableField(value = "user_is_admin")
     private Boolean userIsAdmin;
 
+    @TableField(value = "user_is_deleted")
+    private Boolean userIsDeleted;
+
     @TableField(value = "question_type_id")
-    private Long questionTypeId;
+    private Integer questionTypeId;
 
     @TableField(value = "question_type_name")
     private String questionTypeName;
 
     @TableField(value = "question_id")
-    private Long questionId;
+    private Integer questionId;
+
+    @TableField(value = "question_title")
+    private String questionTitle;
 
     @TableField(value = "question_content")
     private String questionContent;
@@ -52,4 +58,7 @@ public class QaplCombined {
 
     @TableField(value = "question_answer_time")
     private Date questionAnswerTime;
+
+    @TableField(value = "question_is_deleted")
+    private Boolean questionIsDeleted;
 }

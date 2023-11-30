@@ -11,6 +11,8 @@ public class Question {
     @TableId(type = IdType.AUTO)
     @TableField(value = "question_id")
     private Integer questionId;
+    @TableField(value = "question_title")
+    private String questionTitle;
     @TableField(value = "question_content")
     private String questionContent;
     @TableField(value = "answer")

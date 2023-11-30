@@ -2,8 +2,10 @@ package com.lg.qapl.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lg.qapl.entite.QaplCombined;
 import com.lg.qapl.entite.User;
 import com.lg.qapl.entite.Question;
+import com.lg.qapl.mapper.QaplCombinedMapper;
 import com.lg.qapl.mapper.QuestionMapper;
 import com.lg.qapl.mapper.QuestionTypeMapper;
 import com.lg.qapl.mapper.UserMapper;
@@ -32,6 +34,9 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private QuestionTypeMapper questionTypeMapper;
 
+    @Autowired
+    private QaplCombinedMapper qaplCombinedMapper;
+
     @Override
     public ResponseEntity<?> viewQuestions(String token, ViewQuestionRequest request) {
         // 实现管理员查看问题列表逻辑
@@ -42,10 +47,11 @@ public class AdminServiceImpl implements AdminService {
         if (null == user || !user.getIsAdmin()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user");
         }
-        Page<Question> rowPage = new Page<>(request.getCurrent(), request.getSize());
-        LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<Question>()
-                .eq(Question::getIsDeleted, false);
-        rowPage = questionMapper.selectPage(rowPage, queryWrapper);
+        Page<QaplCombined> rowPage = new Page<>(request.getCurrent(), request.getSize());
+        LambdaQueryWrapper<QaplCombined> queryWrapper = new LambdaQueryWrapper<QaplCombined>()
+                .eq(QaplCombined::getUserIsDeleted, false)
+                .eq(QaplCombined::getQuestionIsDeleted, false);
+        rowPage = qaplCombinedMapper.selectPage(rowPage, queryWrapper);
         return ResponseEntity.ok(rowPage); // 返回适当的响应
     }
 

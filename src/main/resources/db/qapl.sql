@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS question_type
 CREATE TABLE IF NOT EXISTS question
 (
     question_id      INT AUTO_INCREMENT PRIMARY KEY,
+    question_title   TEXT NOT NULL,
     question_content TEXT NOT NULL,
     question_type_id INT  NOT NULL,
     user_id          INT  NOT NULL,
@@ -48,14 +49,17 @@ SELECT u.user_id           AS user_id,
        u.phone             AS user_phone,
        u.create_time       AS user_create_time,
        u.is_admin          AS user_is_admin,
+       u.is_deleted        AS user_is_deleted,
        qt.question_type_id AS question_type_id,
        qt.type_name        AS question_type_name,
        q.question_id       AS question_id,
+       q.question_title    AS question_title,
        q.question_content  AS question_content,
        q.create_time       AS question_create_time,
        q.update_time       AS question_update_time,
        q.answer            AS question_answer,
-       q.answer_time       AS question_answer_time
+       q.answer_time       AS question_answer_time,
+       q.is_deleted        AS question_is_deleted
 FROM user AS u
          INNER JOIN
      question AS q ON u.user_id = q.user_id
@@ -81,7 +85,7 @@ VALUES ('缺证书', FALSE),
        ('其他', FALSE);
 
 
-INSERT INTO question (question_content, question_type_id, user_id)
-VALUES ('Question 1?', 1, 1),
-       ('Question 2?', 2, 1),
-       ('Question 3?', 3, 2);
+INSERT INTO question (question_title, question_content, question_type_id, user_id)
+VALUES ('问题标题1', '问题内容测试1：使其东方神起复古一墙之隔使其大部分公司的', 1, 1),
+       ('问题标题2', '问题内容测试2：是的风格是非得失饭店和改善洞若观火电子u发货人的风格', 2, 1),
+       ('问题标题3', '问题内容测试3：是的风格黑色的复古活动中', 3, 2);
