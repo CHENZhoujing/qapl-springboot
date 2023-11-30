@@ -23,25 +23,28 @@ public class AdminController {
 
     // 管理员查看问题列表
     @PostMapping("/view-question")
-    public ResponseEntity<?> viewQuestion(@RequestBody ViewQuestionRequest request) {
+    public ResponseEntity<?> viewQuestion(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody ViewQuestionRequest request) {
         // 实现管理员查看问题列表逻辑
         // 返回问题列表
-        return adminService.viewQuestions(request);
+        String token = authorizationHeader.substring("Bearer ".length());
+        return adminService.viewQuestions(token, request);
     }
 
     // 管理员删除问题
     @PostMapping("/delete-question/{questionId}")
-    public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId) {
+    public ResponseEntity<?> deleteQuestion(@RequestHeader(value = "Authorization") String authorizationHeader, @PathVariable Integer questionId) {
         // 实现管理员删除问题逻辑
         // 返回删除结果
-        return adminService.deleteQuestion(questionId);
+        String token = authorizationHeader.substring("Bearer ".length());
+        return adminService.deleteQuestion(token, questionId);
     }
 
     // 管理员回答问题
     @PostMapping("/answer-question")
-    public ResponseEntity<?> answerQuestion(@RequestBody AnswerQuestionRequest request) {
+    public ResponseEntity<?> answerQuestion(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody AnswerQuestionRequest request) {
         // 实现管理员回答问题逻辑
         // 返回回答结果
-        return adminService.answerQuestion(request);
+        String token = authorizationHeader.substring("Bearer ".length());
+        return adminService.answerQuestion(token, request);
     }
 }

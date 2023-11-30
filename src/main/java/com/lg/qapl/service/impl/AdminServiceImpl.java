@@ -33,10 +33,15 @@ public class AdminServiceImpl implements AdminService {
     private QuestionTypeMapper questionTypeMapper;
 
     @Override
-    public ResponseEntity<?> viewQuestions(ViewQuestionRequest request) {
+    public ResponseEntity<?> viewQuestions(String token, ViewQuestionRequest request) {
         // 实现管理员查看问题列表逻辑
         // 返回问题列表
         // 这里可以调用DAO或者其他服务来获取问题列表
+        Integer userId = JwtUtil.getUserIdFromToken(token);
+        User user = userMapper.selectById(userId);
+        if (null == user || !user.getIsAdmin()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user");
+        }
         Page<Question> rowPage = new Page<>(request.getCurrent(), request.getSize());
         LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<Question>()
                 .eq(Question::getIsDeleted, false);
@@ -45,10 +50,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ResponseEntity<?> deleteQuestion(Long questionId) {
+    public ResponseEntity<?> deleteQuestion(String token, Integer questionId) {
         // 实现管理员删除问题逻辑
         // 返回删除结果
         // 这里可以调用DAO或者其他服务来处理删除逻辑
+        Integer userId = JwtUtil.getUserIdFromToken(token);
+        User user = userMapper.selectById(userId);
+        if (null == user || !user.getIsAdmin()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user");
+        }
         Question question = questionMapper.selectById(questionId);
         if (null == question || question.getIsDeleted()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid question");
@@ -61,16 +71,17 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ResponseEntity<?> answerQuestion(AnswerQuestionRequest request) {
+    public ResponseEntity<?> answerQuestion(String token, AnswerQuestionRequest request) {
         // 实现管理员回答问题逻辑
         // 返回回答结果
         // 这里可以调用DAO或者其他服务来处理回答逻辑
         // check user
+        Integer userId = JwtUtil.getUserIdFromToken(token);
         User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
-                .eq(User::getUserId, request.getUserId())
-                .eq(User::getIsAdmin, false)
+                .eq(User::getUserId, userId)
+                .eq(User::getIsAdmin, true)
                 .eq(User::getIsDeleted, false));
-        if (null == user) {
+        if (null == user || !user.getIsAdmin()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user");
         }
         // check question
@@ -98,7 +109,7 @@ public class AdminServiceImpl implements AdminService {
                 .eq(User::getIsDeleted, false));
         if (null != user && user.getPassword().equals(request.getPassword())) {
             String token = JwtUtil.generateToken(user.getUserId());
-            return ResponseEntity.ok(token); // 返回生成的令牌
+            return ResponseEntity.status(HttpStatus.OK).body(token); // 返回生成的令牌
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }

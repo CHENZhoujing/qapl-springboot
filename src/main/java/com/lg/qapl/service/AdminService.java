@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface AdminService {
-    ResponseEntity<?> viewQuestions(ViewQuestionRequest request);
-    ResponseEntity<?> deleteQuestion(Long questionId);
-    ResponseEntity<?> answerQuestion(AnswerQuestionRequest request);
+    ResponseEntity<?> viewQuestions(String token, ViewQuestionRequest request);
+    ResponseEntity<?> deleteQuestion(String token, Integer questionId);
+    ResponseEntity<?> answerQuestion(String token, AnswerQuestionRequest request);
     ResponseEntity<?> login(LoginRequest request);
 }
