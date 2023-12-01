@@ -1,5 +1,6 @@
 package com.lg.qapl.service;
 
+import com.lg.qapl.request.AdminUpdatePasswordRequest;
 import com.lg.qapl.request.AnswerQuestionRequest;
 import com.lg.qapl.request.LoginRequest;
 import com.lg.qapl.request.ViewQuestionRequest;
@@ -12,4 +13,5 @@ public interface AdminService {
     ResponseEntity<?> deleteQuestion(String token, Integer questionId);
     ResponseEntity<?> answerQuestion(String token, AnswerQuestionRequest request);
     ResponseEntity<?> login(LoginRequest request);
+    ResponseEntity<?> updatePassword(String token, AdminUpdatePasswordRequest request);
 }

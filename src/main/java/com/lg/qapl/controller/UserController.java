@@ -2,6 +2,7 @@ package com.lg.qapl.controller;
 
 import com.lg.qapl.request.LoginRequest;
 import com.lg.qapl.request.CreateQuestionRequest;
+import com.lg.qapl.request.UserUpdatePasswordRequest;
 import com.lg.qapl.request.ViewQuestionRequest;
 import com.lg.qapl.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,14 @@ public class UserController {
         // 返回问题详情
         String token = authorizationHeader.substring("Bearer ".length());
         return userService.viewQuestion(token, request);
+    }
+
+    @PostMapping("/update-password")
+    public ResponseEntity<?> UpdatePassword(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody UserUpdatePasswordRequest request) {
+        // 实现用户修改密码逻辑
+        // 返回修改结果
+        String token = authorizationHeader.substring("Bearer ".length());
+        return userService.updatePassword(token, request);
     }
 
     @GetMapping("/get-question-type")

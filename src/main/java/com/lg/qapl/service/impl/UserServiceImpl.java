@@ -128,5 +128,26 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(rowPage); // 返回适当的响应
     }
 
+    @Override
+    public ResponseEntity<?> updatePassword(String token, UserUpdatePasswordRequest request) {
+        // 实现用户修改密码逻辑
+        Integer userId = JwtUtil.getUserIdFromToken(token);
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUserId, userId)
+                .eq(User::getIsAdmin, false)
+                .eq(User::getIsDeleted, false));
+        if (null == user) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user");
+        }
+        if (null == request.getOldPassword() || null == request.getNewPassword() || !user.getPassword().equals(request.getOldPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid password");
+        }
+        if (request.getOldPassword().equals(request.getNewPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New password cannot be the same as old password");
+        }
+        user.setPassword(request.getNewPassword());
+        userMapper.updateById(user);
+        return ResponseEntity.ok("Update password success");
+    }
 
 }

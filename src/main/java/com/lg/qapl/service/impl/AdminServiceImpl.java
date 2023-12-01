@@ -9,6 +9,7 @@ import com.lg.qapl.mapper.QaplCombinedMapper;
 import com.lg.qapl.mapper.QuestionMapper;
 import com.lg.qapl.mapper.QuestionTypeMapper;
 import com.lg.qapl.mapper.UserMapper;
+import com.lg.qapl.request.AdminUpdatePasswordRequest;
 import com.lg.qapl.request.AnswerQuestionRequest;
 import com.lg.qapl.request.LoginRequest;
 import com.lg.qapl.request.ViewQuestionRequest;
@@ -136,5 +137,23 @@ public class AdminServiceImpl implements AdminService {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
+    }
+
+    @Override
+    public ResponseEntity<?> updatePassword(String token, AdminUpdatePasswordRequest request) {
+        User admin = userMapper.selectById(JwtUtil.getUserIdFromToken(token));
+        if (null == admin || !admin.getIsAdmin()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user");
+        }
+        // 实现管理员修改密码逻辑
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUserId, request.getUserId())
+                .eq(User::getIsDeleted, false));
+        if (null == user) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user");
+        }
+        user.setPassword(request.getNewPassword());
+        userMapper.updateById(user);
+        return ResponseEntity.ok("Update password success");
     }
 }

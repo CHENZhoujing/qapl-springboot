@@ -1,5 +1,6 @@
 package com.lg.qapl.controller;
 
+import com.lg.qapl.request.AdminUpdatePasswordRequest;
 import com.lg.qapl.request.AnswerQuestionRequest;
 import com.lg.qapl.request.LoginRequest;
 import com.lg.qapl.request.ViewQuestionRequest;
@@ -46,5 +47,13 @@ public class AdminController {
         // 返回回答结果
         String token = authorizationHeader.substring("Bearer ".length());
         return adminService.answerQuestion(token, request);
+    }
+
+    @PostMapping("/update-password")
+    public ResponseEntity<?> updatePassword(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody AdminUpdatePasswordRequest request) {
+        // 实现管理员修改密码逻辑
+        // 返回修改结果
+        String token = authorizationHeader.substring("Bearer ".length());
+        return adminService.updatePassword(token, request);
     }
 }
