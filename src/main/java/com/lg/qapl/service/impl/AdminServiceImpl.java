@@ -9,10 +9,7 @@ import com.lg.qapl.mapper.QaplCombinedMapper;
 import com.lg.qapl.mapper.QuestionMapper;
 import com.lg.qapl.mapper.QuestionTypeMapper;
 import com.lg.qapl.mapper.UserMapper;
-import com.lg.qapl.request.AdminUpdatePasswordRequest;
-import com.lg.qapl.request.AnswerQuestionRequest;
-import com.lg.qapl.request.LoginRequest;
-import com.lg.qapl.request.ViewQuestionRequest;
+import com.lg.qapl.request.*;
 import com.lg.qapl.service.AdminService;
 import com.lg.qapl.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,5 +152,53 @@ public class AdminServiceImpl implements AdminService {
         user.setPassword(request.getNewPassword());
         userMapper.updateById(user);
         return ResponseEntity.ok("Update password success");
+    }
+
+    @Override
+    public ResponseEntity<?> deleteUser(String token, Integer userId) {
+        User admin = userMapper.selectById(JwtUtil.getUserIdFromToken(token));
+        if (null == admin || !admin.getIsAdmin()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user");
+        }
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUserId, userId)
+                .eq(User::getIsDeleted, false));
+        if (null == user) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user");
+        }
+        user.setIsDeleted(true);
+        userMapper.updateById(user);
+        return ResponseEntity.ok("Delete user success");
+    }
+
+    @Override
+    public ResponseEntity<?> viewUser(String token, ViewUserRequest request) {
+        User admin = userMapper.selectById(JwtUtil.getUserIdFromToken(token));
+        if (null == admin || !admin.getIsAdmin()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user");
+        }
+        Page<User> rowPage = new Page<>(request.getCurrent(), request.getSize());
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>()
+                .eq(User::getIsDeleted, false);
+        rowPage = userMapper.selectPage(rowPage, queryWrapper);
+        return ResponseEntity.ok(rowPage);
+    }
+
+    @Override
+    public ResponseEntity<?> createUser(String token, CreateUserRequest request) {
+        User admin = userMapper.selectById(JwtUtil.getUserIdFromToken(token));
+        if (null == admin || !admin.getIsAdmin()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user");
+        }
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword());
+        user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
+        user.setIsAdmin(request.getIsAdmin());
+        user.setIsDeleted(false);
+        user.setCreateTime(new Date());
+        userMapper.insert(user);
+        return ResponseEntity.ok("Create user success");
     }
 }

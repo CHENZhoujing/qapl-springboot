@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private QuestionTypeMapper questionTypeMapper;
+
     @Autowired
     private QaplCombinedMapper qaplCombinedMapper;
 

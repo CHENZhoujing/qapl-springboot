@@ -1,9 +1,6 @@
 package com.lg.qapl.controller;
 
-import com.lg.qapl.request.AdminUpdatePasswordRequest;
-import com.lg.qapl.request.AnswerQuestionRequest;
-import com.lg.qapl.request.LoginRequest;
-import com.lg.qapl.request.ViewQuestionRequest;
+import com.lg.qapl.request.*;
 import com.lg.qapl.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -55,5 +52,29 @@ public class AdminController {
         // 返回修改结果
         String token = authorizationHeader.substring("Bearer ".length());
         return adminService.updatePassword(token, request);
+    }
+
+    @PostMapping("/create-user")
+    public ResponseEntity<?> createUser(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody CreateUserRequest request) {
+        // 实现管理员创建用户逻辑
+        // 返回创建结果
+        String token = authorizationHeader.substring("Bearer ".length());
+        return adminService.createUser(token, request);
+    }
+
+    @PostMapping("/view-user")
+    public ResponseEntity<?> viewUser(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody ViewUserRequest request) {
+        String token = authorizationHeader.substring("Bearer ".length());
+        // 实现管理员查看用户列表逻辑
+        // 返回用户列表
+        return adminService.viewUser(token, request);
+    }
+
+    @PostMapping("/delete-user/{userId}")
+    public ResponseEntity<?> deleteUser(@RequestHeader(value = "Authorization") String authorizationHeader, @PathVariable Integer userId) {
+        // 实现管理员删除用户逻辑
+        // 返回删除结果
+        String token = authorizationHeader.substring("Bearer ".length());
+        return adminService.deleteUser(token, userId);
     }
 }
