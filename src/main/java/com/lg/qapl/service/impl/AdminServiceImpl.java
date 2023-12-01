@@ -19,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 
 @Service
@@ -51,6 +53,21 @@ public class AdminServiceImpl implements AdminService {
         LambdaQueryWrapper<QaplCombined> queryWrapper = new LambdaQueryWrapper<QaplCombined>()
                 .eq(QaplCombined::getUserIsDeleted, false)
                 .eq(QaplCombined::getQuestionIsDeleted, false);
+
+        if (request.isNotAnswered()) {
+            queryWrapper.isNull(QaplCombined::getQuestionAnswerTime);
+        }
+
+        // 如果thisMonth为true，筛选出createTime在当前月份的记录
+        if (request.isThisMonth()) {
+            LocalDate now = LocalDate.now();
+            LocalDate firstDayOfMonth = now.with(TemporalAdjusters.firstDayOfMonth());
+            LocalDate lastDayOfMonth = now.with(TemporalAdjusters.lastDayOfMonth());
+            queryWrapper.between(QaplCombined::getQuestionCreateTime, firstDayOfMonth, lastDayOfMonth);
+        }
+
+        queryWrapper.orderByDesc(QaplCombined::getQuestionCreateTime);
+
         rowPage = qaplCombinedMapper.selectPage(rowPage, queryWrapper);
         return ResponseEntity.ok(rowPage); // 返回适当的响应
     }

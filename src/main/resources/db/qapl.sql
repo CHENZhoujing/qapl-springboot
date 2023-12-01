@@ -68,9 +68,10 @@ FROM user AS u
 
 
 INSERT INTO user (username, password, email, phone, is_admin)
-VALUES ('user1', 'password1', 'user1@example.com', '123-456-7890', FALSE),
-       ('user2', 'password2', 'user2@example.com', '987-654-3210', FALSE),
-       ('admin', 'admin', 'user3@example.com', '555-555-5555', TRUE);
+VALUES ('admin', 'admin', 'user3@example.com', '555-555-5555', TRUE),
+       ('username1', 'password1', 'user1@example.com', '123-456-7890', FALSE),
+       ('username2', 'password2', 'user2@example.com', '987-654-3210', FALSE),
+       ('username3', 'password2', 'user3@example.com', '987-654-321"', FALSE);
 
 INSERT INTO question_type (type_name, is_deleted)
 VALUES ('缺证书', FALSE),
@@ -86,6 +87,9 @@ VALUES ('缺证书', FALSE),
 
 
 INSERT INTO question (question_title, question_content, question_type_id, user_id)
-VALUES ('问题标题1', '问题内容测试1：使其东方神起复古一墙之隔使其大部分公司的', 1, 1),
-       ('问题标题2', '问题内容测试2：是的风格是非得失饭店和改善洞若观火电子u发货人的风格', 2, 1),
-       ('问题标题3', '问题内容测试3：是的风格黑色的复古活动中', 3, 2);
+VALUES ('问题标题1', '问题内容测试1：使其东方神起复古一墙之隔使其大部分公司的', 1, 2),
+       ('问题标题2', '问题内容测试2：是的风格是非得失饭店和改善洞若观火电子u发货人的风格', 2, 2),
+       ('问题标题3', '问题内容测试3：是的风格黑色的复古活动中', 3, 2),
+       ('问题标题4', '问题内容测试4：是的风格黑色的复古活动中', 9, 3),
+       ('问题标题5', '问题内容测试5：是的风格黑色的复古活动中', 7, 4),
+       ('问题标题6', '问题内容测试6：是的风格黑色的复古活动中', 8, 4);
