@@ -62,6 +62,14 @@ public class AdminController {
         return adminService.createUser(token, request);
     }
 
+    @PostMapping("/update-user")
+    public ResponseEntity<?> updateUser(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody UpdateUserRequest request) {
+        // 实现管理员修改用户逻辑
+        // 返回修改结果
+        String token = authorizationHeader.substring("Bearer ".length());
+        return adminService.updateUser(token, request);
+    }
+
     @PostMapping("/view-user")
     public ResponseEntity<?> viewUser(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody ViewUserRequest request) {
         String token = authorizationHeader.substring("Bearer ".length());

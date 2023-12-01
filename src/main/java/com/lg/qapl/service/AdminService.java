@@ -14,4 +14,5 @@ public interface AdminService {
     ResponseEntity<?> deleteUser(String token, Integer userId);
     ResponseEntity<?> viewUser(String token, ViewUserRequest request);
     ResponseEntity<?> createUser(String token, CreateUserRequest request);
+    ResponseEntity<?> updateUser(String token, UpdateUserRequest request);
 }

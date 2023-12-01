@@ -201,4 +201,25 @@ public class AdminServiceImpl implements AdminService {
         userMapper.insert(user);
         return ResponseEntity.ok("Create user success");
     }
+
+    @Override
+    public ResponseEntity<?> updateUser(String token, UpdateUserRequest request) {
+        User admin = userMapper.selectById(JwtUtil.getUserIdFromToken(token));
+        if (null == admin || !admin.getIsAdmin()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user");
+        }
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUserId, request.getUserId())
+                .eq(User::getIsDeleted, false));
+        if (null == user) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user");
+        }
+        user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword());
+        user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
+        user.setIsAdmin(request.getIsAdmin());
+        userMapper.updateById(user);
+        return ResponseEntity.ok("Update user success");
+    }
 }
