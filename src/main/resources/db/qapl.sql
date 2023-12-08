@@ -1,4 +1,7 @@
-CREATE DATABASE IF NOT EXISTS qapl;
+CREATE DATABASE IF NOT EXISTS qapl
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
 USE qapl;
 
 DROP VIEW IF EXISTS qapl_combined;
