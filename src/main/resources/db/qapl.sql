@@ -71,10 +71,13 @@ FROM user AS u
 
 
 INSERT INTO user (username, password, email, phone, is_admin)
-VALUES ('admin', 'admin', 'user3@example.com', '555-555-5555', TRUE),
-       ('username1', 'password1', 'user1@example.com', '123-456-7890', FALSE),
-       ('username2', 'password2', 'user2@example.com', '987-654-3210', FALSE),
-       ('username3', 'password2', 'user3@example.com', '987-654-321"', FALSE);
+VALUES
+    ('admin001', 'adminpwd', 'admin001@example.com', '134-0000-0000', TRUE),
+    ('zhangsan', 'password123', 'zhangsan@example.com', '131-0000-0000', FALSE),
+    ('lisi', 'password456', 'lisi@example.com', '132-0000-0000', FALSE),
+    ('wangwu', 'password789', 'wangwu@example.com', '133-0000-0000', FALSE);
+
+
 
 INSERT INTO question_type (type_name, is_deleted)
 VALUES ('缺证书', FALSE),
@@ -90,9 +93,13 @@ VALUES ('缺证书', FALSE),
 
 
 INSERT INTO question (question_title, question_content, question_type_id, user_id)
-VALUES ('问题标题1', '问题内容测试1：使其东方神起复古一墙之隔使其大部分公司的', 1, 2),
-       ('问题标题2', '问题内容测试2：是的风格是非得失饭店和改善洞若观火电子u发货人的风格', 2, 2),
-       ('问题标题3', '问题内容测试3：是的风格黑色的复古活动中', 3, 2),
-       ('问题标题4', '问题内容测试4：是的风格黑色的复古活动中', 9, 3),
-       ('问题标题5', '问题内容测试5：是的风格黑色的复古活动中', 7, 4),
-       ('问题标题6', '问题内容测试6：是的风格黑色的复古活动中', 8, 4);
+VALUES
+    ('公司注册流程是怎样的？', '想了解公司注册的具体流程和所需材料。', 4, 2),
+    ('如何调整季报和月报？', '请问季报和月报的调整流程是怎样的？有哪些注意事项？', 5, 2),
+    ('公司名称更改的步骤', '我们公司计划更改名称，应该怎样操作？', 6, 2),
+    ('公司账户未激活的解决办法', '公司账户未激活，我们应该怎么处理？', 3, 2),
+    ('公司注销流程及注意事项', '请问公司注销的流程是什么？有哪些法律事项需要注意？', 7, 3),
+    ('公司重启的条件和流程', '公司若要重启，需要满足哪些条件？流程是怎样的？', 8, 3),
+    ('修改公司生效日期的步骤', '怎样修改公司法律文件中的生效日期？', 9, 4),
+    ('缺少必要证书的处理方法', '如果发现公司缺少某些必要的经营证书，该如何补办？', 1, 4),
+    ('应对税号失效的措施', '公司的税号失效了，我们应该怎么处理？', 2, 4);
